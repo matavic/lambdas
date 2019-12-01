@@ -1,6 +1,41 @@
-exports.handler = (event, context, callback) => {
-    callback(null, {
+var mongoose = require('mongoose');
+
+let conn = null;
+
+const uri = 'mongodb+srv://matavic:8G2AtquEEtpP0Ihk@vmcluster-my0iu.mongodb.net/awardsseason?retryWrites=true&w=majority';
+
+exports.handler = function(event, context, callback) {
+
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  run().
+    then(res => {
+      callback(null, res);
+    }).
+    catch(error => callback(error));
+};
+
+async function run() {
+
+    if (conn == null) {
+      conn = await mongoose.createConnection(uri, {
+        bufferCommands: false,
+        bufferMaxEntries: 0
+      });
+      conn.model('awards', new mongoose.Schema({
+        awards: String,
+        category: Number,
+        nominees: Array,
+        winner: String
+      }));
+    }
+
+    const M = conn.model('awards');
+
+    const doc = await M.find();
+    const response = {
       statusCode: 200,
-      body: 'Hello, world!',
-    });
-  };
+      body: JSON.stringify(doc)
+    };
+    return response;
+}
