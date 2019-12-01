@@ -24,9 +24,11 @@ async function run() {
       });
       conn.model('awards', new mongoose.Schema({
         awards: String,
-        category: Number,
-        nominees: Array,
-        winner: String
+        category: String,
+        fnominees: Array,
+        fwinner: Array,
+        pnominees: Array,
+        pwinner: Array
       }));
     }
 
