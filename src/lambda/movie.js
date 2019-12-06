@@ -12,11 +12,11 @@ exports.handler = function(event, context, callback) {
 };
 
 async function run(m) {
-
+  let movieResult;
   try {
-    const movieResult = await axios.get(apiOMDB, {
+    movieResult = await axios.get(apiOMDB, {
       params: {
-        apikey: process.env.OMDB_API_KEY,
+        apikey: 'f1debf90',
         t: m,
         y: '2019'
       }
@@ -24,14 +24,13 @@ async function run(m) {
   } catch (err) {
     console.error(err);
   }
-  console.log(movieResult.data);
-    const response = {
-      statusCode: 200,
-      headers: {
-        'content-type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-      body: JSON.stringify(movieResult)
-    };
+  const response = {
+    statusCode: 200,
+    headers: {
+      'content-type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
+    body: JSON.stringify(movieResult.data)
+  };
     return response;
 }
