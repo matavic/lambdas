@@ -6,7 +6,7 @@ const uri = 'mongodb+srv://' + process.env.MONGODB_ATLAS_USER + ':' + process.en
 
 exports.handler = function(event, context, callback) {
   context.callbackWaitsForEmptyEventLoop = false;
-  const award = event.queryStringParameters.c;
+  const category = event.queryStringParameters.c;
   run(award).
     then(res => {
       callback(null, res);
@@ -14,7 +14,7 @@ exports.handler = function(event, context, callback) {
     catch(error => callback(error));
 };
 
-async function run(a) {
+async function run(c) {
 
     if (conn == null) {
       conn = await mongoose.createConnection(uri, {
