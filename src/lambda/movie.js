@@ -16,7 +16,7 @@ async function run(m) {
   try {
     movieResult = await axios.get(apiOMDB, {
       params: {
-        apikey: 'f1debf90',
+        apikey: process.env.OMDB_API_KEY,
         t: m,
         y: '2019'
       }
