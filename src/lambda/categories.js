@@ -7,7 +7,7 @@ const uri = 'mongodb+srv://' + process.env.MONGODB_ATLAS_USER + ':' + process.en
 exports.handler = function(event, context, callback) {
   context.callbackWaitsForEmptyEventLoop = false;
   const category = event.queryStringParameters.c;
-  run(award).
+  run(category).
     then(res => {
       callback(null, res);
     }).
