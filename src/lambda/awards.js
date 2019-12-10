@@ -15,7 +15,7 @@ exports.handler = function(event, context, callback) {
 };
 
 async function run(a) {
-
+  console.log(a);
     if (conn == null) {
       conn = await mongoose.createConnection(uri, {
         bufferCommands: false,
@@ -55,10 +55,10 @@ async function run(a) {
         }
       }
     });
-
+    console.log(doc);
     const results = await Promise.all(resp);
-
-    const response = {
+    console.log(resp)
+;    const response = {
       statusCode: 200,
       headers: {
         'content-type': 'application/json',
