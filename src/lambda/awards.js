@@ -15,7 +15,9 @@ exports.handler = function(event, context, callback) {
 };
 
 async function run(a) {
+  let b = a.split(',');
   console.log(a);
+  console.log(b[0]);
     if (conn == null) {
       conn = await mongoose.createConnection(uri, {
         bufferCommands: false,
@@ -37,7 +39,7 @@ async function run(a) {
 
     const M = conn.model('awards');
     let mod = false;
-    let doc = await M.find({ award: a });   
+    let doc = await M.find({ award: b[0] });   
     let resp = await doc.map( async function(f){
       if(f.fwinner.length && Object.entries(f.winnerdata).length === 0){
         try {
