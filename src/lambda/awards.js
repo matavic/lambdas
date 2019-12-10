@@ -16,8 +16,6 @@ exports.handler = function(event, context, callback) {
 
 async function run(a) {
   let b = a.split(',');
-  console.log(a);
-  console.log(b[0]);
     if (conn == null) {
       conn = await mongoose.createConnection(uri, {
         bufferCommands: false,
