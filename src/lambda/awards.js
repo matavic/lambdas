@@ -19,7 +19,9 @@ async function run(a) {
     if (conn == null) {
       conn = await mongoose.createConnection(uri, {
         bufferCommands: false,
-        bufferMaxEntries: 0
+        bufferMaxEntries: 0,
+        useNewUrlParser: true,
+        useUnifiedTopology: true
       });
       conn.model('awards', new mongoose.Schema({
         award: String,
