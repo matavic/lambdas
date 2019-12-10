@@ -22,7 +22,7 @@ async function run(a) {
         bufferMaxEntries: 0
       });
       conn.model('awards', new mongoose.Schema({
-        awards: String,
+        award: String,
         category: String,
         fnominees: Array,
         fwinner: Array,
