@@ -23,7 +23,8 @@ async function run(a) {
       });
       conn.model('awards', new mongoose.Schema({
         award: String,
-        category: String,
+        categorycod: String,
+        categorytit: String,
         fnominees: Array,
         fwinner: Array,
         pnominees: Array,
