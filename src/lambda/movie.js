@@ -1,4 +1,6 @@
 var axios = require('axios');
+const util = require('util');
+var YouTube = require('youtube-node');
 const apiOMDB = 'http://www.omdbapi.com';
 
 exports.handler = function(event, context, callback) {
@@ -12,6 +14,9 @@ exports.handler = function(event, context, callback) {
 };
 
 async function run(m) {
+  let youTube = new YouTube();
+  youTube.setKey(process.env.YOUTUBE_API_KEY);
+  const youtubePromise = util.promisify(youTube.search)
   let movieResult;
   try {
     movieResult = await axios.get(apiOMDB, {
@@ -24,6 +29,15 @@ async function run(m) {
   } catch (err) {
     console.error(err);
   }
+  let movieTrailer;
+  if(movieResult) {
+    try {
+      movieTrailer = await youtubePromise(m + ' trailer', 1);
+      movieResult.data.Youtube = 'https://www.youtube.com/watch?v=' + movieTrailer.items[0].id.videoId;
+    } catch (e) {
+    console.error(e);
+    }
+  }
   const response = {
     statusCode: 200,
     headers: {
@@ -32,5 +46,6 @@ async function run(m) {
     },
     body: JSON.stringify(movieResult.data)
   };
-    return response;
+    
+  return response;
 }
