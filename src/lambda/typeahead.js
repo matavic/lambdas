@@ -43,11 +43,11 @@ async function run(s) {
     doc.forEach(d => {
       d.fnominees.forEach(n => {
         if(regex.test(n))
-          results.add(n);
+          results.add(n.trim());
       });
       d.pnominees.forEach(p => {
         if(regex.test(p))
-          results.add(p);
+          results.add(p.trim());
       });
     }); 
     const response = {
