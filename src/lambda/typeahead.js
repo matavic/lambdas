@@ -56,7 +56,7 @@ async function run(s) {
         'content-type': 'application/json',
         'Access-Control-Allow-Origin': '*',
       },
-      body: JSON.stringify(Array.from(results))
+      body: JSON.stringify(Array.from(results).slice(0, 20))
     };
     return response;
 }
