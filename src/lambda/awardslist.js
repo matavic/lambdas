@@ -23,12 +23,12 @@ async function run() {
       title: String,
       image: String,
       description: String,
-      date: String,
+      date: String
     }));
   }
 
   const M = conn.model('awardslist');
-  let doc = await M.find();   
+  let doc = await M.find({});   
   const response = {
     statusCode: 200,
     headers: {
