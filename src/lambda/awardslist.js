@@ -23,7 +23,7 @@ async function run() {
       title: String,
       image: String,
       description: String,
-      date: Array,
+      date: String,
     }));
   }
 
