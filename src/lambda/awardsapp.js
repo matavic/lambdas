@@ -4,6 +4,8 @@ let conn = null;
 const apiOMDB = 'http://www.omdbapi.com';
 const apiTMDB = 'https://api.themoviedb.org/3';
 const posterBasePath = 'https://image.tmdb.org/t/p/w342';
+const smallPosterBasePath = 'https://image.tmdb.org/t/p/w92';
+const smallProfileBasePath = 'https://image.tmdb.org/t/p/w45';
 const profileBasePath = 'https://image.tmdb.org/t/p/w185';
 const peopleCategories = ['actor', 'actress', 'supportingactor', 'supportingactress', 'director', 'screenplay', 'composer'];
 const uri = 'mongodb+srv://' + process.env.MONGODB_ATLAS_USER + ':' + process.env.MONGODB_ATLAS_PASSWORD + '@vmcluster-my0iu.mongodb.net/' + process.env.MONGODB_ATLAS_DB_NAME + '?retryWrites=true&w=majority';
@@ -87,13 +89,13 @@ async function run(a) {
               params: {
                 api_key: process.env.TMDB_API_KEY,
                 query: f.fnominees[j],
-                year: 2019
+                primary_release_year: 2019
               }
             });
             if(movieSearch.data.results.length > 0){ 
               if(!f.fnomineesdata[j].Poster || f.fnomineesdata[j].Poster === "") 
                 f.fnomineesdata[j].Poster = posterBasePath + movieSearch.data.results[0].poster_path;
-
+              f.fnomineesdata[j].Thumbnail = smallPosterBasePath + movieSearch.data.results[0].poster_path;
               movieInfo = await axios.get(apiTMDB + "/movie/" + movieSearch.data.results[0].id, {
                 params: {
                   api_key: process.env.TMDB_API_KEY,
@@ -139,8 +141,10 @@ async function run(a) {
 
           var obj = {};
           if(personSearch.data.results.length > 0){
-            if(personSearch.data.results[0].profile_path)
+            if(personSearch.data.results[0].profile_path) {
+              obj.Avatar = smallProfileBasePath + personSearch.data.results[0].profile_path;
               obj.Photo = profileBasePath + personSearch.data.results[0].profile_path;
+            }
           }
           f.pnomineesdata.push(obj);
 
