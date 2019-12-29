@@ -55,7 +55,7 @@ async function run(a) {
       }
     });
     const results = await Promise.all(resp);
-;    const response = {
+      const response = {
       statusCode: 200,
       headers: {
         'content-type': 'application/json',

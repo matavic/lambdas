@@ -16,7 +16,7 @@ exports.handler = function(event, context, callback) {
 async function run(m) {
   let youTube = new YouTube();
   youTube.setKey(process.env.YOUTUBE_API_KEY);
-  const youtubePromise = util.promisify(youTube.search)
+  const youtubePromise = util.promisify(youTube.search);
   let movieResult;
   try {
     movieResult = await axios.get(apiOMDB, {
