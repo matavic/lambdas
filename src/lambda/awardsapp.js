@@ -5,9 +5,11 @@ const apiOMDB = 'http://www.omdbapi.com';
 const apiTMDB = 'https://api.themoviedb.org/3';
 const posterBasePath = 'https://image.tmdb.org/t/p/w342';
 const smallPosterBasePath = 'https://image.tmdb.org/t/p/w92';
+const mediumPosterBasePath1 = 'https://image.tmdb.org/t/p/w154';
+const mediumPosterBasePath2 = 'https://image.tmdb.org/t/p/w185';
 const smallProfileBasePath = 'https://image.tmdb.org/t/p/w45';
 const profileBasePath = 'https://image.tmdb.org/t/p/w185';
-const peopleCategories = ['actor', 'actress', 'supportingactor', 'supportingactress', 'director', 'screenplay', 'composer'];
+const peopleCategories = ['actor', 'actress', 'supportingactor', 'supportingactress', 'director', 'screenplay'];
 const uri = 'mongodb+srv://' + process.env.MONGODB_ATLAS_USER + ':' + process.env.MONGODB_ATLAS_PASSWORD + '@vmcluster-my0iu.mongodb.net/' + process.env.MONGODB_ATLAS_DB_NAME + '?retryWrites=true&w=majority';
 
 exports.handler = function(event, context, callback) {
@@ -129,6 +131,8 @@ async function run(a) {
 
     if(f.pnominees.length > 0 && f.pnomineesdata.length === 0 && peopleCategories.includes(f.categorycod)){
       let personSearch;
+      let personDetails;
+      let personCredits;
       for(let k=0; k < f.pnominees.length; k++) {
         try {
 
@@ -141,11 +145,88 @@ async function run(a) {
 
           var obj = {};
           if(personSearch.data.results.length > 0){
+            
             if(personSearch.data.results[0].profile_path) {
               obj.Avatar = smallProfileBasePath + personSearch.data.results[0].profile_path;
               obj.Photo = profileBasePath + personSearch.data.results[0].profile_path;
             }
+          
+            personDetails = await axios.get(apiTMDB + "/person/" + personSearch.data.results[0].id, {
+              params: {
+                api_key: process.env.TMDB_API_KEY,
+              }
+            });
+
+            if(personDetails.data.known_for_department) {
+              if(personDetails.data.known_for_department === "Acting" || personDetails.data.known_for_department === "Actors"){
+                if(personDetails.data.gender && personDetails.data.gender == 2)
+                  obj.Job = "Actor";
+
+                if(personDetails.data.gender && personDetails.data.gender == 1)
+                  obj.Job = "Actress";
+              }
+              if(personDetails.data.known_for_department === "Writing")
+                  obj.Job = "Writer";
+
+              if(personDetails.data.known_for_department === "Directing")
+                  obj.Job = "Director";
+            }
+
+            if(personDetails.data.birthday) {
+              obj.Birthday = personDetails.data.birthday;
+            }
+
+            if(personDetails.data.name) {
+              obj.Name = personDetails.data.name;
+            }
+
+            if(personDetails.data.place_of_birth) {
+              obj.PlaceOfBirth = personDetails.data.place_of_birth;
+            }
+
+            if(personDetails.data.biography) {
+              obj.Biography = personDetails.data.biography;
+            }
+
+            personCredits = await axios.get(apiTMDB + "/person/" + personSearch.data.results[0].id + "/movie_credits", {
+              params: {
+                api_key: process.env.TMDB_API_KEY,
+              }
+            });
+
+            if(personDetails.data.known_for_department && (personDetails.data.known_for_department === "Acting" || personDetails.data.known_for_department === "Actors") && personCredits.data.cast.length > 0){
+              let filmography = personCredits.data.cast.filter(r => r.poster_path && (r.character !== "Himself" || r.character !== "Herself"));
+              let filmo = filmography.map(film => {
+                return {
+                  Year: film.release_date ? Number(film.release_date.slice(0,4)) : null,
+                  Title: film.title ? film.title : null,
+                  Plot: film.overview ? film.overview : null,
+                  Poster1: mediumPosterBasePath1 + film.poster_path,
+                  Poster2: mediumPosterBasePath2 + film.poster_path,
+                };
+              });
+              filmo.sort(function(a, b) { 
+                return a.Year - b.Year;
+                })
+              obj.Filmography = filmo;
+            } else if (personDetails.data.known_for_department && (personDetails.data.known_for_department === "Directing" || personDetails.data.known_for_department === "Writing") && personCredits.data.crew.length > 0){
+              let filmography = personCredits.data.crew.filter(r => r.poster_path && (r.job === "Director" || r.job === "Screenplay"));
+              let filmo = filmography.map(film => {
+                return {
+                  Year: film.release_date ? Number(film.release_date.slice(0,4)) : null,
+                  Title: film.title ? film.title : null,
+                  Plot: film.overview ? film.overview : null,
+                  Poster1: mediumPosterBasePath1 + film.poster_path,
+                  Poster2: mediumPosterBasePath2 + film.poster_path,
+                };
+              });
+              filmo.sort(function(a, b) { 
+                return a.Year - b.Year;
+                })
+              obj.Filmography = filmo;
+            }
           }
+
           f.pnomineesdata.push(obj);
 
         } catch (errnum) {
