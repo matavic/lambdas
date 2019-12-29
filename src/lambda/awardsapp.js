@@ -4,6 +4,7 @@ let conn = null;
 const apiOMDB = 'http://www.omdbapi.com';
 const apiTMDB = 'https://api.themoviedb.org/3';
 const posterBasePath = 'https://image.tmdb.org/t/p/w342';
+const backdropBasePath = 'https://image.tmdb.org/t/p/w300';
 const smallPosterBasePath = 'https://image.tmdb.org/t/p/w92';
 const mediumPosterBasePath1 = 'https://image.tmdb.org/t/p/w154';
 const mediumPosterBasePath2 = 'https://image.tmdb.org/t/p/w185';
@@ -84,6 +85,7 @@ async function run(a) {
 
       let movieSearch;
       let movieInfo;
+      let movieCredits;
       let movieTrailers;
       for(let j=0; j < f.fnomineesdata.length; j++) {
         try {
@@ -95,16 +97,86 @@ async function run(a) {
               }
             });
             if(movieSearch.data.results.length > 0){ 
-              if(!f.fnomineesdata[j].Poster || f.fnomineesdata[j].Poster === "") 
+              if(!f.fnomineesdata[j].Poster || f.fnomineesdata[j].Poster === "" || f.fnomineesdata[j].Poster === "N/A") 
                 f.fnomineesdata[j].Poster = posterBasePath + movieSearch.data.results[0].poster_path;
+
               f.fnomineesdata[j].Thumbnail = smallPosterBasePath + movieSearch.data.results[0].poster_path;
+
+              if(movieSearch.data.results[0].backdrop_path)
+                f.fnomineesdata[j].Backdrop = backdropBasePath + movieSearch.data.results[0].backdrop_path;
+                
+              if((!f.fnomineesdata[j].Plot || f.fnomineesdata[j].Plot === "" || f.fnomineesdata[j].Plot === "N/A") && movieSearch.data.results[0].overview)  
+                f.fnomineesdata[j].Plot = movieSearch.data.results[0].overview;
+
+              if((!f.fnomineesdata[j].Title || f.fnomineesdata[j].Title === "" || f.fnomineesdata[j].Title === "N/A") && movieSearch.data.results[0].title)  
+                f.fnomineesdata[j].Plot = movieSearch.data.results[0].overview;
+
+              if((!f.fnomineesdata[j].Year || f.fnomineesdata[j].Year === "" || f.fnomineesdata[j].Year === "N/A") && movieSearch.data.results[0].release_date) {
+                f.fnomineesdata[j].Year = movieSearch.data.results[0].release_date.slice(0,4);
+                f.fnomineesdata[j].Released = movieSearch.data.results[0].release_date;
+              }
+
               movieInfo = await axios.get(apiTMDB + "/movie/" + movieSearch.data.results[0].id, {
                 params: {
                   api_key: process.env.TMDB_API_KEY,
                 }
               });
-              if(movieInfo.data.production_countries.length > 0)
+
+              if(movieInfo.data.production_countries.length > 0) {
                 f.fnomineesdata[j].Flag = "https://www.countryflags.io/" + movieInfo.data.production_countries[0].iso_3166_1.toLowerCase() + "/shiny/24.png";
+                if((!f.fnomineesdata[j].Country || f.fnomineesdata[j].Country === "" || f.fnomineesdata[j].Country === "N/A")){
+                  f.fnomineesdata[j].Country = movieInfo.data.production_countries.map(mov => mov.name).join(', ');
+                }  
+              }
+
+              if(movieInfo.data.production_companies.length > 0) {
+                if((!f.fnomineesdata[j].Production || f.fnomineesdata[j].Production === "") || f.fnomineesdata[j].Production === "N/A"){
+                  f.fnomineesdata[j].Production = movieInfo.data.production_companies.map(movi => movi.name).join(', ');
+                }  
+              }
+
+              if(movieInfo.data.genres.length > 0) {
+                if((!f.fnomineesdata[j].Genre || f.fnomineesdata[j].Genre === "") || f.fnomineesdata[j].Genre === "N/A"){
+                  f.fnomineesdata[j].Genre = movieInfo.data.genres.map(movie => movie.name).join(', ');
+                }  
+              }
+
+              if(movieInfo.data.spoken_languages.length > 0) {
+                if((!f.fnomineesdata[j].Language || f.fnomineesdata[j].Language === "") || f.fnomineesdata[j].Language === "N/A"){
+                  f.fnomineesdata[j].Language = movieInfo.data.spoken_languages.map(l => l.name).join(', ');
+                }  
+              }
+
+              if((!f.fnomineesdata[j].RunTime || f.fnomineesdata[j].RunTime === "" || f.fnomineesdata[j].RunTime === "N/A") && movieInfo.data.runtime)  
+                f.fnomineesdata[j].RunTime = movieInfo.data.runtime;  
+
+              if((!f.fnomineesdata[j].Website || f.fnomineesdata[j].Website === "" || f.fnomineesdata[j].Website === "N/A") && movieInfo.data.homepage)  
+                f.fnomineesdata[j].Website = movieInfo.data.homepage;  
+
+              if(movieInfo.data.tagline && movieInfo.data.tagline !== "")  
+                f.fnomineesdata[j].TagLine = movieInfo.data.tagline;  
+
+              if((!f.fnomineesdata[j].Actors || f.fnomineesdata[j].Actors === "" || f.fnomineesdata[j].Actors === "N/A"
+                  || !f.fnomineesdata[j].Director || f.fnomineesdata[j].Director === "" || f.fnomineesdata[j].Director === "N/A")) {
+                   
+                  movieCredits = await axios.get(apiTMDB + "/movie/" + movieSearch.data.results[0].id + "/credits", {
+                    params: {
+                      api_key: process.env.TMDB_API_KEY,
+                    }
+                  });
+
+                  if(movieCredits.data.cast.length > 0){
+                    f.fnomineesdata[j].Actors = movieCredits.data.cast.map(a => a.name).slice(0, 6).join(', ');
+                  }
+
+                  if(movieCredits.data.crew.length > 0){
+                    if(movieCredits.data.crew.job === "Director")
+                      f.fnomineesdata[j].Director = movieCredits.data.crew.name;
+
+                    if(movieCredits.data.crew.job === "Screenplay")
+                      f.fnomineesdata[j].Writer = movieCredits.data.crew.name;
+                  }
+              }
 
               movieTrailers = await axios.get(apiTMDB + "/movie/" + movieSearch.data.results[0].id + "/videos", {
                 params: {
