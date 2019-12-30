@@ -1,5 +1,7 @@
 var mongoose = require('mongoose');
 var axios = require('axios');
+const util = require('util');
+var YouTube = require('youtube-node');
 let conn = null;
 const apiOMDB = 'http://www.omdbapi.com';
 const apiTMDB = 'https://api.themoviedb.org/3';
@@ -147,14 +149,20 @@ async function run(a) {
                 }  
               }
 
-              if((!f.fnomineesdata[j].RunTime || f.fnomineesdata[j].RunTime === "" || f.fnomineesdata[j].RunTime === "N/A") && movieInfo.data.runtime)  
-                f.fnomineesdata[j].RunTime = movieInfo.data.runtime;  
+              if((!f.fnomineesdata[j].Runtime || f.fnomineesdata[j].Runtime === "" || f.fnomineesdata[j].Runtime === "N/A") && movieInfo.data.runtime)  
+                f.fnomineesdata[j].Runtime = movieInfo.data.runtime;  
 
               if((!f.fnomineesdata[j].Website || f.fnomineesdata[j].Website === "" || f.fnomineesdata[j].Website === "N/A") && movieInfo.data.homepage)  
                 f.fnomineesdata[j].Website = movieInfo.data.homepage;  
 
               if(movieInfo.data.tagline && movieInfo.data.tagline !== "")  
-                f.fnomineesdata[j].TagLine = movieInfo.data.tagline;  
+                f.fnomineesdata[j].TagLine = movieInfo.data.tagline; 
+
+              if(movieInfo.data.budget && movieInfo.data.budget !== 0)  
+                f.fnomineesdata[j].Budget = movieInfo.data.budget;  
+
+              if(movieInfo.data.revenue && movieInfo.data.revenue !== 0)  
+                f.fnomineesdata[j].Revenue = movieInfo.data.revenue;  
 
               if((!f.fnomineesdata[j].Actors || f.fnomineesdata[j].Actors === "" || f.fnomineesdata[j].Actors === "N/A"
                   || !f.fnomineesdata[j].Director || f.fnomineesdata[j].Director === "" || f.fnomineesdata[j].Director === "N/A")) {
@@ -184,13 +192,29 @@ async function run(a) {
                 }
               });
               if(movieTrailers.data.results.length > 0){
+                
                 let trailersYoutube = movieTrailers.data.results.filter(t => t.site === "YouTube" && t.type === "Trailer" );
-                if(trailersYoutube.length > 0)
+                let youTube = new YouTube();
+                youTube.setKey(process.env.YOUTUBE_API_KEY);
+                const youtubePromise = util.promisify(youTube.getById);
+                let respt;
+                if(trailersYoutube.length > 0) {
                   f.fnomineesdata[j].Youtube = "https://www.youtube.com/watch?v=" + trailersYoutube[0].key;
-                else {
+                  respt = await youtubePromise(trailersYoutube[0].key);
+                  if(respt.snippet.thumbnails.default)
+                    f.fnomineesdata[j].YoutubeThumbnail = respt.snippet.thumbnails.default.url
+                  else if(respt.snippet.thumbnails.standard)
+                    f.fnomineesdata[j].YoutubeThumbnail = respt.snippet.thumbnails.standard.url
+                } else {
                   let teasersYoutube = movieTrailers.data.results.filter(t => t.site === "YouTube");
-                  if(teasersYoutube.length > 0)
+                  if(teasersYoutube.length > 0) {
                     f.fnomineesdata[j].Youtube = "https://www.youtube.com/watch?v=" + teasersYoutube[0].key;
+                    respt = await youtubePromise(teasersYoutube[0].key);
+                    if(respt.snippet.thumbnails.default)
+                      f.fnomineesdata[j].YoutubeThumbnail = respt.snippet.thumbnails.default.url
+                    else if(respt.snippet.thumbnails.standard)
+                      f.fnomineesdata[j].YoutubeThumbnail = respt.snippet.thumbnails.standard.url
+                  }
                 }
               }
             }
