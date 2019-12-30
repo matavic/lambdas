@@ -166,7 +166,6 @@ async function run(a) {
 
               if((!f.fnomineesdata[j].Actors || f.fnomineesdata[j].Actors === "" || f.fnomineesdata[j].Actors === "N/A"
                   || !f.fnomineesdata[j].Director || f.fnomineesdata[j].Director === "" || f.fnomineesdata[j].Director === "N/A")) {
-                   
                   movieCredits = await axios.get(apiTMDB + "/movie/" + movieSearch.data.results[0].id + "/credits", {
                     params: {
                       api_key: process.env.TMDB_API_KEY,
