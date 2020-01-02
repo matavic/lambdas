@@ -22,7 +22,8 @@ async function run() {
       title: String,
       image: String,
       description: String,
-      date: String
+      date: String,
+      nominations: String
     }));
   }
 

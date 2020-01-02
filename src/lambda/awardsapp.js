@@ -200,19 +200,19 @@ async function run(a) {
                 if(trailersYoutube.length > 0) {
                   f.fnomineesdata[j].Youtube = "https://www.youtube.com/watch?v=" + trailersYoutube[0].key;
                   respt = await youtubePromise(trailersYoutube[0].key);
-                  if(respt.items[0].snippet.thumbnails.default)
-                    f.fnomineesdata[j].YoutubeThumbnail = respt.items[0].snippet.thumbnails.default.url
-                  else if(respt.items[0].snippet.thumbnails.standard)
+                  if(respt.items[0].snippet.thumbnails.standard)
                     f.fnomineesdata[j].YoutubeThumbnail = respt.items[0].snippet.thumbnails.standard.url
+                  else if(respt.items[0].snippet.thumbnails.default)
+                    f.fnomineesdata[j].YoutubeThumbnail = respt.items[0].snippet.thumbnails.default.url
                 } else {
                   let teasersYoutube = movieTrailers.data.results.filter(t => t.site === "YouTube");
                   if(teasersYoutube.length > 0) {
                     f.fnomineesdata[j].Youtube = "https://www.youtube.com/watch?v=" + teasersYoutube[0].key;
                     respt = await youtubePromise(teasersYoutube[0].key);
-                    if(respt.items[0].snippet.thumbnails.default)
-                      f.fnomineesdata[j].YoutubeThumbnail = respt.items[0].snippet.thumbnails.default.url
-                    else if(respt.items[0].snippet.thumbnails.standard)
+                    if(respt.items[0].snippet.thumbnails.standard)
                       f.fnomineesdata[j].YoutubeThumbnail = respt.items[0].snippet.thumbnails.standard.url
+                    else if(respt.items[0].snippet.thumbnails.default)
+                      f.fnomineesdata[j].YoutubeThumbnail = respt.items[0].snippet.thumbnails.default.url
                   }
                 }
               }
