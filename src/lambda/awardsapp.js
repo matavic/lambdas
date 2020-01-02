@@ -126,6 +126,7 @@ async function run(a) {
 
               if(movieInfo.data.production_countries.length > 0) {
                 f.fnomineesdata[j].Flag = "https://www.countryflags.io/" + movieInfo.data.production_countries[0].iso_3166_1.toLowerCase() + "/shiny/24.png";
+                f.fnomineesdata[j].FlagHD = "https://www.countryflags.io/" + movieInfo.data.production_countries[0].iso_3166_1.toLowerCase() + "/shiny/64.png";
                 if((!f.fnomineesdata[j].Country || f.fnomineesdata[j].Country === "" || f.fnomineesdata[j].Country === "N/A")){
                   f.fnomineesdata[j].Country = movieInfo.data.production_countries.map(mov => mov.name).join(', ');
                 }  
