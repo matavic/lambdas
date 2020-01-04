@@ -18,35 +18,50 @@ const uri = 'mongodb+srv://' + process.env.MONGODB_ATLAS_USER + ':' + process.en
 exports.handler = function(event, context, callback) {
   context.callbackWaitsForEmptyEventLoop = false;
   const award = event.queryStringParameters.a;
-  run(award).
+
+  const { clientContext } = context;
+  const username = clientContext.user ? clientContext.user.user_metadata.full_name : "guest";
+  const useremail = clientContext.user ? clientContext.user.email : "guest";
+  run(award, username, useremail).
     then(res => {
       callback(null, res);
     }).
     catch(error => callback(error));
 };
 
-async function run(a) {
+async function run(a, u, e) {
   let b = a.split(',');
-    if (conn == null) {
-      conn = await mongoose.createConnection(uri, {
-        bufferCommands: false,
-        bufferMaxEntries: 0,
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-      });
-      conn.model('awards', new mongoose.Schema({
-        award: String,
-        categorycod: String,
-        categorytit: String,
-        fnominees: Array,
-        fwinner: Array,
-        pnominees: Array,
-        pwinner: Array,
-        winnerdata: Object,
-        pnomineesdata: Array,
-        fnomineesdata: Array
+  if (conn == null) {
+    conn = await mongoose.createConnection(uri, {
+      bufferCommands: false,
+      bufferMaxEntries: 0,
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+    conn.model('awards', new mongoose.Schema({
+      award: String,
+      categorycod: String,
+      categorytit: String,
+      fnominees: Array,
+      fwinner: Array,
+      pnominees: Array,
+      pwinner: Array,
+      winnerdata: Object,
+      pnomineesdata: Array,
+      fnomineesdata: Array
+    }));
+    if((e !== 'guest' && u !== 'guest')) {
+      conn.model('users', new mongoose.Schema({
+        name: String,
+        email: String,
+        watched: Array,
+        watchlist: Array,
+        favorite: Array,
+        ratings: Array,
+        votes: Array
       }));
     }
+  }
 
     const M = conn.model('awards');
     let doc = await M.find({ award: b[0] });   
@@ -103,6 +118,7 @@ async function run(a) {
                 f.fnomineesdata[j].Poster = posterBasePath + movieSearch.data.results[0].poster_path;
 
               f.fnomineesdata[j].Thumbnail = smallPosterBasePath + movieSearch.data.results[0].poster_path;
+              f.fnomineesdata[j].TMDBId = movieSearch.data.results[0].id;
 
               if(movieSearch.data.results[0].backdrop_path)
                 f.fnomineesdata[j].Backdrop = backdropBasePath + movieSearch.data.results[0].backdrop_path;
@@ -334,6 +350,14 @@ async function run(a) {
     }
 
     });
+
+    if((e !== 'guest' && u !== 'guest')) {
+      const U = conn.model('users');
+      let user = await U.findOne({ email: e }); 
+      doc.user = user;
+      console.log(doc);
+    }
+
     const results = await Promise.all(resp);
       const response = {
       statusCode: 200,
