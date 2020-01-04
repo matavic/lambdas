@@ -15,7 +15,7 @@ exports.handler = function(event, context, callback) {
 };
 
 async function run(b) {
-  
+  let doc;
   if(b.event === 'signup') {
     if (conn == null) {
       conn = await mongoose.createConnection(uri, {
