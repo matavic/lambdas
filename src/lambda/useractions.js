@@ -37,6 +37,8 @@ async function run(u, e, a, f, it) {
       headers: {
         'content-type': 'application/json',
         'Access-Control-Allow-Origin': '*',
+        "Access-Control-Allow-Methods" : 'GET, POST, OPTIONS, PUT',
+        "Access-Control-Allow-Headers": "Authorization"
       },
       body: JSON.stringify(doc)
     };
@@ -87,6 +89,8 @@ async function run(u, e, a, f, it) {
         headers: {
           'content-type': 'application/json',
           'Access-Control-Allow-Origin': '*',
+          "Access-Control-Allow-Methods" : 'GET, POST, OPTIONS, PUT',
+          "Access-Control-Allow-Headers": "Authorization"
         },
         body: JSON.stringify(doc)
       };
