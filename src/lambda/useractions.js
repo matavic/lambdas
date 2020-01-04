@@ -4,6 +4,8 @@ const uri = 'mongodb+srv://' + process.env.MONGODB_ATLAS_USER + ':' + process.en
 
 exports.handler = function(event, context, callback) {
   context.callbackWaitsForEmptyEventLoop = false;
+  console.log('event', event);
+  console.log('context', context);
   const { clientContext } = context;
   const username = clientContext.user ? clientContext.user.user_metadata.full_name : "guest";
   const useremail = clientContext.user ? clientContext.user.email : "guest";
@@ -13,7 +15,7 @@ exports.handler = function(event, context, callback) {
   
   const action = event.queryStringParameters.a;
   const flag = event.queryStringParameters.f;
-  console.log(event.body);
+  
   const item = JSON.parse(event.body);
   console.log('item', useremail);
   run(username, useremail, action, flag, item).
