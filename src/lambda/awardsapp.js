@@ -350,12 +350,12 @@ async function run(a, u, e) {
     }
 
     });
-
+    let data = {};
+    data.data = doc;
     if((e !== 'guest' && u !== 'guest')) {
       const U = conn.model('users');
       let user = await U.findOne({ email: e }); 
-      doc.user = user;
-      console.log(doc);
+      data.user = user;
     }
 
     const results = await Promise.all(resp);
@@ -367,7 +367,7 @@ async function run(a, u, e) {
         "Access-Control-Allow-Methods" : 'GET, POST, OPTIONS, PUT',
         "Access-Control-Allow-Headers": "Authorization"
       },
-      body: JSON.stringify(doc)
+      body: JSON.stringify(data)
     };
     return response;
 }
