@@ -352,10 +352,14 @@ async function run(a, u, e) {
     });
     let data = {};
     data.data = doc;
+    console.log('e ', e);
+    console.log('u ', u);
     if((e !== 'guest' && u !== 'guest')) {
       const U = conn.model('users');
       let user = await U.findOne({ email: e }); 
       data.user = user;
+      console.log('data ', data);
+      console.log('user ', user);
     }
 
     const results = await Promise.all(resp);
