@@ -13,6 +13,7 @@ exports.handler = function(event, context, callback) {
   
   const action = event.queryStringParameters.a;
   const flag = event.queryStringParameters.f;
+  console.log(event.body);
   const item = JSON.parse(event.body);
   console.log('item', useremail);
   run(username, useremail, action, flag, item).
