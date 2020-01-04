@@ -38,7 +38,8 @@ async function run(b) {
     try {
       const U = conn.model('users');
       let newuser = new U(
-        { name: b.user.user_metadata && user.user_metadata.full_name ? user.user_metadata.full_name : '', 
+        { 
+          name: b.user.user_metadata && b.user.user_metadata.full_name ? b.user.user_metadata.full_name : '', 
           email: b.user.email,
           watched: [],
           watchlist: [],
