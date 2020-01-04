@@ -17,7 +17,7 @@ exports.handler = function(event, context, callback) {
 };
 
 async function run(u, n, e) {
-  let b = u.split(',');
+  let b = u ? u.split(',') : '';
   let doc;
   let response;
   if((e === 'guest' && u === 'guest' && !b)) {
@@ -57,7 +57,7 @@ async function run(u, n, e) {
   }
 
     const U = conn.model('users');
-    let email = e !== 'guest' ? e : u
+    let email = e !== 'guest' ? e : b
     let user = await U.findOne({ email: email }); 
     console.log('user ', user);
     if(!user) {
