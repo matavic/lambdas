@@ -19,17 +19,14 @@ exports.handler = function(event, context, callback) {
   context.callbackWaitsForEmptyEventLoop = false;
   const award = event.queryStringParameters.a;
 
-  const { clientContext } = context;
-  const username = clientContext.user ? clientContext.user.user_metadata.full_name : "guest";
-  const useremail = clientContext.user ? clientContext.user.email : "guest";
-  run(award, username, useremail).
+  run(award).
     then(res => {
       callback(null, res);
     }).
     catch(error => callback(error));
 };
 
-async function run(a, u, e) {
+async function run(a) {
   let b = a.split(',');
   if (conn == null) {
     conn = await mongoose.createConnection(uri, {
@@ -50,17 +47,6 @@ async function run(a, u, e) {
       pnomineesdata: Array,
       fnomineesdata: Array
     }));
-    // if((e !== 'guest' && u !== 'guest')) {
-    conn.model('users', new mongoose.Schema({
-      name: String,
-      email: String,
-      watched: Array,
-      watchlist: Array,
-      favorite: Array,
-      ratings: Array,
-      votes: Array
-    }));
-    // }
   }
 
     const M = conn.model('awards');
@@ -350,28 +336,18 @@ async function run(a, u, e) {
     }
 
     });
-    let data = {};
-    data.data = doc;
-    console.log('e ', e);
-    console.log('u ', u);
-    if((e !== 'guest' && u !== 'guest')) {
-      const U = conn.model('users');
-      let user = await U.findOne({ email: e }); 
-      data.user = user;
-      console.log('data ', data);
-      console.log('user ', user);
-    }
 
     const results = await Promise.all(resp);
-      const response = {
-      statusCode: 200,
-      headers: {
-        'content-type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        "Access-Control-Allow-Methods" : 'GET, POST, OPTIONS, PUT',
-        "Access-Control-Allow-Headers": "Authorization"
-      },
-      body: JSON.stringify(data)
+
+    const response = {
+    statusCode: 200,
+    headers: {
+      'content-type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      "Access-Control-Allow-Methods" : 'GET, POST, OPTIONS, PUT',
+      "Access-Control-Allow-Headers": "Authorization"
+    },
+    body: JSON.stringify(doc)
     };
     return response;
 }
