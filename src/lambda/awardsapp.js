@@ -50,17 +50,17 @@ async function run(a, u, e) {
       pnomineesdata: Array,
       fnomineesdata: Array
     }));
-    if((e !== 'guest' && u !== 'guest')) {
-      conn.model('users', new mongoose.Schema({
-        name: String,
-        email: String,
-        watched: Array,
-        watchlist: Array,
-        favorite: Array,
-        ratings: Array,
-        votes: Array
-      }));
-    }
+    // if((e !== 'guest' && u !== 'guest')) {
+    conn.model('users', new mongoose.Schema({
+      name: String,
+      email: String,
+      watched: Array,
+      watchlist: Array,
+      favorite: Array,
+      ratings: Array,
+      votes: Array
+    }));
+    // }
   }
 
     const M = conn.model('awards');
