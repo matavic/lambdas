@@ -226,12 +226,13 @@ async function run(u, e, ue, a, f, it) {
           let oldvote = null;
           let resulting;
           let resulting2;
-          encontrado = user.votes.findIndex(f => f.award === it.award && f.categorytit === it.category);
+          encontrado = user.votes.findIndex(f => f.award === it.award && f.category === it.category);
+          
           if(encontrado !== -1) {
             oldvote = user.votes[encontrado].vote;
           }
           const A = conn.model('awards');
-          let catVotes = await A.findOne({ award: it.award, categorytit: it.category }); 
+          let catVotes = await A.findOne({ award: it.award, categorytit: it.category });
           let resp = [];
           if(catVotes && catVotes.fnomineesdata.length > 0) {
             let total = 0;
@@ -241,25 +242,24 @@ async function run(u, e, ue, a, f, it) {
               ind = catVotes.fnomineesdata.findIndex(ct => ct.Title === oldvote);
               if(ind !== -1){
                 let fixOldN = parseFloat(catVotes.fnomineesdata[ind].nvotes) - 1;
-                let fixOldP = (parseFloat(catVotes.fnomineesdata[ind].nvotes) / total) * 100;
-                resulting = await catVotes.update( { "fnomineesdata.Title": oldvote }, { $set: { "fnomineesdata.$.nvotes": fixOldN, "fnomineesdata.$.pvotes": fixOldP } });
+                let fixOldP = (fixOldN / total) * 100;
+                total = total - 1;
+                resulting = await A.update( { award: it.award, categorytit: it.category, "fnomineesdata.Title": oldvote }, { $set: { "fnomineesdata.$.nvotes": fixOldN, "fnomineesdata.$.pvotes": fixOldP } });
               } else {
                 break;
               }
             }
-            // let newCatVotes = await A.findOne({ award: it.award, categorytit: it.category });
             let newInd = catVotes.fnomineesdata.findIndex(o => o.Title === it.vote);
             let newN = parseFloat(catVotes.fnomineesdata[newInd].nvotes) + 1;
             total = total + 1;
-            let newP = (parseFloat(catVotes.fnomineesdata[newInd].nvotes) / total) * 100;
-            resulting2 = await catVotes.update( { "fnomineesdata.Title": it.vote }, { $set: { "fnomineesdata.$.nvotes": newN, "fnomineesdata.$.pvotes": newP } });
-            
+            let newP = (newN / total) * 100;
+            resulting2 = await A.update( { award: it.award, categorytit: it.category, "fnomineesdata.Title": it.vote }, { $set: { "fnomineesdata.$.nvotes": newN, "fnomineesdata.$.pvotes": newP } });
             for(let i = 0; i < catVotes.fnomineesdata.length; i++){
               if(ind !== -1 && i === ind)
                 continue;
               if(i === newInd)
                 continue;
-              resp[i] = await catVotes.update( { "fnomineesdata.Title": catVotes.fnomineesdata[i].Title }, { $set: { "fnomineesdata.$.pvotes": (parseFloat(catVotes.fnomineesdata[i].nvotes) / total) * 100 } });
+              resp[i] = await A.update( { award: it.award, categorytit: it.category, "fnomineesdata.Title": catVotes.fnomineesdata[i].Title }, { $set: { "fnomineesdata.$.pvotes": (parseFloat(catVotes.fnomineesdata[i].nvotes) / total) * 100 } });
             }
             const resArray = await Promise.all(resp);
           }
