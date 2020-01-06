@@ -30,7 +30,7 @@ async function run(b) {
         email: String,
         watched: Array,
         watchlist: Array,
-        favorite: Array,
+        favorites: Array,
         ratings: Array,
         votes: Array
       }));

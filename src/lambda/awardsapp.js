@@ -99,12 +99,16 @@ async function run(a) {
                 primary_release_year: 2019
               }
             });
+            if(f.fwinner.length === 0){
+              f.fnomineesdata[j].pvotes = 0;
+              f.fnomineesdata[j].nvotes = 0;
+            }
             if(movieSearch.data.results.length > 0){ 
               if(!f.fnomineesdata[j].Poster || f.fnomineesdata[j].Poster === "" || f.fnomineesdata[j].Poster === "N/A") 
                 f.fnomineesdata[j].Poster = posterBasePath + movieSearch.data.results[0].poster_path;
 
               f.fnomineesdata[j].Thumbnail = smallPosterBasePath + movieSearch.data.results[0].poster_path;
-              f.fnomineesdata[j].TMDBId = movieSearch.data.results[0].id;
+              f.fnomineesdata[j].TMDBId = String(movieSearch.data.results[0].id);
 
               if(movieSearch.data.results[0].backdrop_path)
                 f.fnomineesdata[j].Backdrop = backdropBasePath + movieSearch.data.results[0].backdrop_path;

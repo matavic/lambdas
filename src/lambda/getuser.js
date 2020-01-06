@@ -20,7 +20,7 @@ async function run(u, n, e) {
   let b = u ? u.split(',') : '';
   let doc;
   let response;
-  if((e === 'guest' && u === 'guest' && !b)) {
+  if((e === 'guest' && u === 'guest' && !b[0])) {
       
     doc = {
       status: 'error',
@@ -50,14 +50,14 @@ async function run(u, n, e) {
       email: String,
       watched: Array,
       watchlist: Array,
-      favorite: Array,
+      favorites: Array,
       ratings: Array,
       votes: Array
     }));
   }
 
     const U = conn.model('users');
-    let email = e !== 'guest' ? e : b
+    let email = e !== 'guest' ? e : b[0]
     let user = await U.findOne({ email: email }); 
     console.log('user ', user);
     if(!user) {
