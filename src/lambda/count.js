@@ -106,7 +106,7 @@ async function run(t, a) {
         onlyNominees.push({_id: film._id, nominations: film.nominations});
     }); 
     // consulta = consulta1.concat(consulta2);
-    consulta = consulta2.concat(onlyNominees);
+    consulta = consulta1.concat(onlyNominees);
   }
 
   const response = {
