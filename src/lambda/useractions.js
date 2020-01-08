@@ -121,7 +121,9 @@ async function run(u, e, ue, a, f, it) {
       switch (b[0]) {
         case 'watched':
           encontrado = user.watched.findIndex(film => film.Title === it.Title);
+          let encontradoWatchlist = user.watchlist.findIndex(film => film.Title === it.Title);
           if(c[0] === 'i' && encontrado !== -1) {
+            re = await U.update({ _id: user._id }, { $pull: { watchlist: { Title:  it.Title } } });
             doc = {
               status: 'success',
               message: 'Register not modified'
@@ -139,6 +141,8 @@ async function run(u, e, ue, a, f, it) {
             return response;  
           } else {
             re = c[0] === 'i' ? await U.update({ _id: user._id }, { $push: { watched: it } }) : await U.update({ _id: user._id }, { $pull: { watched: { Title:  it.Title } } });
+            if(c[0] === 'i')
+              let wm = await U.update({ _id: user._id }, { $pull: { watchlist: { Title:  it.Title } } });
           }
           break;
         case 'favorites':
