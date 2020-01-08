@@ -6,7 +6,6 @@ exports.handler = function(event, context, callback) {
   context.callbackWaitsForEmptyEventLoop = false;
 
   const body = JSON.parse(event.body);
-  console.log('body ', body);
   run(body).
     then(res => {
       callback(null, res);
@@ -49,7 +48,6 @@ async function run(b) {
          }
         );
       let saved = await newuser.save(); 
-      console.log('user saved', saved);
       doc = {
         status: 'success',
         message: 'New user signup'

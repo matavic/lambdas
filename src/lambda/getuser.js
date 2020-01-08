@@ -59,7 +59,6 @@ async function run(u, n, e) {
     const U = conn.model('users');
     let email = e !== 'guest' ? e : b[0]
     let user = await U.findOne({ email: email }); 
-    console.log('user ', user);
     if(!user) {
       doc = {
         status: 'error',
