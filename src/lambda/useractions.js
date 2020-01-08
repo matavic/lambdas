@@ -117,13 +117,16 @@ async function run(u, e, ue, a, f, it) {
     }
     let re;
     let encontrado;
+    let encontradoWatchlist;
+    let encontradoWatched;
     try {
       switch (b[0]) {
         case 'watched':
           encontrado = user.watched.findIndex(film => film.Title === it.Title);
-          let encontradoWatchlist = user.watchlist.findIndex(film => film.Title === it.Title);
+          encontradoWatchlist = user.watchlist.findIndex(film => film.Title === it.Title);
           if(c[0] === 'i' && encontrado !== -1) {
-            re = await U.update({ _id: user._id }, { $pull: { watchlist: { Title:  it.Title } } });
+            if(encontradoWatchlist !== -1)
+              re = await U.update({ _id: user._id }, { $pull: { watchlist: { Title:  it.Title } } });
             doc = {
               status: 'success',
               message: 'Register not modified'
@@ -141,7 +144,7 @@ async function run(u, e, ue, a, f, it) {
             return response;  
           } else {
             re = c[0] === 'i' ? await U.update({ _id: user._id }, { $push: { watched: it } }) : await U.update({ _id: user._id }, { $pull: { watched: { Title:  it.Title } } });
-            if(c[0] === 'i')
+            if(c[0] === 'i' && encontradoWatchlist !== -1)
               let wm = await U.update({ _id: user._id }, { $pull: { watchlist: { Title:  it.Title } } });
           }
           break;
@@ -169,7 +172,10 @@ async function run(u, e, ue, a, f, it) {
           break;
         case 'watchlist':
           encontrado = user.watchlist.findIndex(f => f.Title === it.Title);
+          encontradoWatched = user.watched.findIndex(film => film.Title === it.Title);
           if(c[0] === 'i' && encontrado !== -1) {
+            if(encontradoWatched !== -1)
+              re = await U.update({ _id: user._id }, { $pull: { watched: { Title:  it.Title } } });
             doc = {
               status: 'success',
               message: 'Register not modified'
@@ -187,6 +193,8 @@ async function run(u, e, ue, a, f, it) {
             return response;
           } else {
             re = c[0] === 'i' ? await U.update({ _id: user._id }, { $push: { watchlist: it } }) : await U.update({ _id: user._id }, { $pull: { watchlist: { Title: it.Title } } });
+            if(c[0] === 'i' && encontradoWatched !== -1)
+              let wdm = await U.update({ _id: user._id }, { $pull: { watched: { Title:  it.Title } } });
           }  
           break;
           case 'ratings':
