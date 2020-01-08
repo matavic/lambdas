@@ -120,7 +120,7 @@ async function run(u, e, ue, a, f, it) {
     try {
       switch (b[0]) {
         case 'watched':
-          encontrado = user.watched.findIndex(film => film.title === it.title);
+          encontrado = user.watched.findIndex(film => film.Title === it.Title);
           if(c[0] === 'i' && encontrado !== -1) {
             doc = {
               status: 'success',
@@ -138,11 +138,11 @@ async function run(u, e, ue, a, f, it) {
             };
             return response;  
           } else {
-            re = c[0] === 'i' ? await U.update({ _id: user._id }, { $push: { watched: it } }) : await U.update({ _id: user._id }, { $pull: { watched: { title:  it.title } } });
+            re = c[0] === 'i' ? await U.update({ _id: user._id }, { $push: { watched: it } }) : await U.update({ _id: user._id }, { $pull: { watched: { Title:  it.Title } } });
           }
           break;
         case 'favorites':
-          encontrado = user.favorites.findIndex(f => f.title === it.title);
+          encontrado = user.favorites.findIndex(f => f.Title === it.Title);
           if(c[0] === 'i' && encontrado !== -1) {
             doc = {
               status: 'success',
@@ -160,11 +160,11 @@ async function run(u, e, ue, a, f, it) {
             };
             return response;
           } else {
-            re = c[0] === 'i' ? await U.update({ _id: user._id }, { $push: { favorites: it } }) : await U.update({ _id: user._id }, { $pull: { favorites: { title: it.title } } });
+            re = c[0] === 'i' ? await U.update({ _id: user._id }, { $push: { favorites: it } }) : await U.update({ _id: user._id }, { $pull: { favorites: { Title: it.Title } } });
           }  
           break;
         case 'watchlist':
-          encontrado = user.watchlist.findIndex(f => f.title === it.title);
+          encontrado = user.watchlist.findIndex(f => f.Title === it.Title);
           if(c[0] === 'i' && encontrado !== -1) {
             doc = {
               status: 'success',
@@ -182,7 +182,7 @@ async function run(u, e, ue, a, f, it) {
             };
             return response;
           } else {
-            re = c[0] === 'i' ? await U.update({ _id: user._id }, { $push: { watchlist: it } }) : await U.update({ _id: user._id }, { $pull: { watchlist: { title: it.title } } });
+            re = c[0] === 'i' ? await U.update({ _id: user._id }, { $push: { watchlist: it } }) : await U.update({ _id: user._id }, { $pull: { watchlist: { Title: it.Title } } });
           }  
           break;
           case 'ratings':
