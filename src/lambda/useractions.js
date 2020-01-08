@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 let conn = null;
-const uri = 'mongodb+srv://' + process.env.MONGODB_ATLAS_USER + ':' + process.env.MONGODB_ATLAS_PASSWORD + '@vmcluster-my0iu.mongodb.net/' + process.env.MONGODB_ATLAS_DB_NAME + '?retryWrites=true&w=majority';
+// const uri = 'mongodb+srv://' + process.env.MONGODB_ATLAS_USER + ':' + process.env.MONGODB_ATLAS_PASSWORD + '@vmcluster-my0iu.mongodb.net/' + process.env.MONGODB_ATLAS_DB_NAME + '?retryWrites=true&w=majority';
+const uri = 'mongodb+srv://matavic:8G2AtquEEtpP0Ihk@vmcluster-my0iu.mongodb.net/awardsseason?retryWrites=true&w=majority';
 exports.handler = function(event, context, callback) {
 
   if(event.httpMethod === 'OPTIONS') {
@@ -123,8 +124,14 @@ async function run(u, e, ue, a, f, it) {
       switch (b[0]) {
         case 'watched':
           encontrado = user.watched.findIndex(film => film.Title === it.Title);
+          console.log('encontrado ', encontrado);
+          console.log('encontrado ', it.Title);
+          console.log('user.watched ', user.watched);
+          console.log('encontrado ', encontrado);
           encontradoWatchlist = user.watchlist.findIndex(film => film.Title === it.Title);
+          console.log('encontradoWatchlist ', encontradoWatchlist);
           if(c[0] === 'i' && encontrado !== -1) {
+            console.log('por aqui encontrado ', encontrado);
             if(encontradoWatchlist !== -1)
               re = await U.update({ _id: user._id }, { $pull: { watchlist: { Title:  it.Title } } });
             doc = {
@@ -144,8 +151,9 @@ async function run(u, e, ue, a, f, it) {
             return response;  
           } else {
             re = c[0] === 'i' ? await U.update({ _id: user._id }, { $push: { watched: it } }) : await U.update({ _id: user._id }, { $pull: { watched: { Title:  it.Title } } });
+            let wm;
             if(c[0] === 'i' && encontradoWatchlist !== -1)
-              let wm = await U.update({ _id: user._id }, { $pull: { watchlist: { Title:  it.Title } } });
+              wm = await U.update({ _id: user._id }, { $pull: { watchlist: { Title:  it.Title } } });
           }
           break;
         case 'favorites':
@@ -193,8 +201,9 @@ async function run(u, e, ue, a, f, it) {
             return response;
           } else {
             re = c[0] === 'i' ? await U.update({ _id: user._id }, { $push: { watchlist: it } }) : await U.update({ _id: user._id }, { $pull: { watchlist: { Title: it.Title } } });
+            let wdm;
             if(c[0] === 'i' && encontradoWatched !== -1)
-              let wdm = await U.update({ _id: user._id }, { $pull: { watched: { Title:  it.Title } } });
+              wdm = await U.update({ _id: user._id }, { $pull: { watched: { Title:  it.Title } } });
           }  
           break;
           case 'ratings':
