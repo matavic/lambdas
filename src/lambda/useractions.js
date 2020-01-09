@@ -12,7 +12,7 @@ exports.handler = function(event, context, callback) {
         "Access-Control-Allow-Methods" : 'GET, POST, OPTIONS, PUT',
         "Access-Control-Allow-Headers": "Authorization, Origin, X-Requested-With, Content-Type, Accept"
       },
-      body: JSON.stringify({message: 'You can use CORS'})
+      body: 'OK'
     }
     callback(null, response)
     return
