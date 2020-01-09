@@ -19,29 +19,28 @@ exports.handler = function(event, context, callback) {
   // }
   context.callbackWaitsForEmptyEventLoop = false;
   const { clientContext } = context;
-  const username = clientContext.user ? clientContext.user.user_metadata.full_name : "guest";
-  const useremail = clientContext.user ? clientContext.user.email : "guest";
+  // const username = clientContext.user ? clientContext.user.user_metadata.full_name : "guest";
+  // const useremail = clientContext.user ? clientContext.user.email : "guest";
   
   const action = event.queryStringParameters.a;
   const flag = event.queryStringParameters.f;
   const uemail = event.queryStringParameters.u;
   const payload = event.queryStringParameters.p;
   const item = JSON.parse(payload);
-  run(username, useremail, uemail, action, flag, item).
+  run(uemail, action, flag, item).
     then(res => {
       callback(null, res);
     }).
     catch(error => callback(error));
 };
 
-async function run(u, e, ue, a, f, it) {
+async function run(ue, a, f, it) {
   let b = a.split(',');
   let c = f.split(',');
   let uem = ue ? ue.split(',')[0] : '';
   let doc;
   let response;
-  if((e === 'guest' && u === 'guest' && !uem)) {
-      
+  if((!uem)) {
     doc = {
       status: 'error',
       message: 'Forbidden'
@@ -49,7 +48,7 @@ async function run(u, e, ue, a, f, it) {
     response = {
       statusCode: 403,
       headers: {
-        'content-type': 'application/json',
+        'Content-type': 'application/json',
         'Access-Control-Allow-Origin': '*'
       },
       body: JSON.stringify(doc)
@@ -94,8 +93,8 @@ async function run(u, e, ue, a, f, it) {
   }
 
     const U = conn.model('users');
-    let searchfor = e !== 'guest' ? e : uem;
-    let user = await U.findOne({ email: searchfor }); 
+    // let searchfor = e !== 'guest' ? e : uem;
+    let user = await U.findOne({ email: uem }); 
     
     if(!user) {
       doc = {
@@ -105,7 +104,7 @@ async function run(u, e, ue, a, f, it) {
       response = {
         statusCode: 404,
         headers: {
-          'content-type': 'application/json',
+          'Content-type': 'application/json',
           'Access-Control-Allow-Origin': '*'
         },
         body: JSON.stringify(doc)
@@ -114,8 +113,8 @@ async function run(u, e, ue, a, f, it) {
     }
     let re;
     let encontrado;
-    let encontradoWatchlist;
-    let encontradoWatched;
+    // let encontradoWatchlist;
+    // let encontradoWatched;
     let wm;
     try {
       switch (b[0]) {
@@ -138,7 +137,6 @@ async function run(u, e, ue, a, f, it) {
             return response;  
           } else {
             re = c[0] === 'i' ? await U.update({ _id: user._id }, { $push: { watched: it } }) : await U.update({ _id: user._id }, { $pull: { watched: { Title:  it.Title } } });
-            let wm;
             if(c[0] === 'i')
               wm = await U.update({ _id: user._id, "watchlist.Title": it.Title }, { $pull: { watchlist: { Title:  it.Title } } });
           }
@@ -153,7 +151,7 @@ async function run(u, e, ue, a, f, it) {
             response = {
               statusCode: 200,
               headers: {
-                'content-type': 'application/json',
+                'Content-type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
               },
               body: JSON.stringify(doc)
@@ -174,7 +172,7 @@ async function run(u, e, ue, a, f, it) {
             response = {
               statusCode: 200,
               headers: {
-                'content-type': 'application/json',
+                'Content-type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
               },
               body: JSON.stringify(doc)
