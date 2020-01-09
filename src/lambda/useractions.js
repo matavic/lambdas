@@ -18,7 +18,7 @@ exports.handler = function(event, context, callback) {
   //   return
   // }
   context.callbackWaitsForEmptyEventLoop = false;
-  const { clientContext } = context;
+  // const { clientContext } = context;
   // const username = clientContext.user ? clientContext.user.user_metadata.full_name : "guest";
   // const useremail = clientContext.user ? clientContext.user.email : "guest";
   
@@ -271,7 +271,7 @@ async function run(ue, a, f, it) {
       console.error(err);
     }
     if(re && re.ok === 1){
-      user = await U.findOne({ email: e });
+      user = await U.findOne({ email: uem });
       doc = {
         status: 'success',
         message: 'Action complete',
