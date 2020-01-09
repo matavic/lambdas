@@ -49,9 +49,7 @@ async function run(u, e, ue, a, f, it) {
       statusCode: 403,
       headers: {
         'content-type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        "Access-Control-Allow-Methods" : 'GET, POST, OPTIONS, PUT',
-        "Access-Control-Allow-Headers": "Authorization"
+        'Access-Control-Allow-Origin': '*'
       },
       body: JSON.stringify(doc)
     };
@@ -107,9 +105,7 @@ async function run(u, e, ue, a, f, it) {
         statusCode: 404,
         headers: {
           'content-type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          "Access-Control-Allow-Methods" : 'GET, POST, OPTIONS, PUT',
-          "Access-Control-Allow-Headers": "Authorization"
+          'Access-Control-Allow-Origin': '*'
         },
         body: JSON.stringify(doc)
       };
@@ -134,9 +130,7 @@ async function run(u, e, ue, a, f, it) {
               statusCode: 200,
               headers: {
                 'content-type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                "Access-Control-Allow-Methods" : 'GET, POST, OPTIONS, PUT',
-                "Access-Control-Allow-Headers": "Authorization"
+                'Access-Control-Allow-Origin': '*'
               },
               body: JSON.stringify(doc)
             };
@@ -159,9 +153,7 @@ async function run(u, e, ue, a, f, it) {
               statusCode: 200,
               headers: {
                 'content-type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                "Access-Control-Allow-Methods" : 'GET, POST, OPTIONS, PUT',
-                "Access-Control-Allow-Headers": "Authorization"
+                'Access-Control-Allow-Origin': '*'
               },
               body: JSON.stringify(doc)
             };
@@ -182,9 +174,7 @@ async function run(u, e, ue, a, f, it) {
               statusCode: 200,
               headers: {
                 'content-type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                "Access-Control-Allow-Methods" : 'GET, POST, OPTIONS, PUT',
-                "Access-Control-Allow-Headers": "Authorization"
+                'Access-Control-Allow-Origin': '*'
               },
               body: JSON.stringify(doc)
             };
@@ -299,9 +289,7 @@ async function run(u, e, ue, a, f, it) {
       statusCode: 200,
       headers: {
         'content-type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        "Access-Control-Allow-Methods" : 'GET, POST, OPTIONS, PUT',
-        "Access-Control-Allow-Headers": "Authorization"
+        'Access-Control-Allow-Origin': '*'
       },
       body: JSON.stringify(doc)
     };
