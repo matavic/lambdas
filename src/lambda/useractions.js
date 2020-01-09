@@ -3,20 +3,20 @@ let conn = null;
 const uri = 'mongodb+srv://' + process.env.MONGODB_ATLAS_USER + ':' + process.env.MONGODB_ATLAS_PASSWORD + '@vmcluster-my0iu.mongodb.net/' + process.env.MONGODB_ATLAS_DB_NAME + '?retryWrites=true&w=majority';
 exports.handler = function(event, context, callback) {
 
-  if(event.httpMethod === 'OPTIONS') {
-    const response = {
-      statusCode: 200,
-      headers: {
-        'content-type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        "Access-Control-Allow-Methods" : 'GET, POST, OPTIONS, PUT',
-        "Access-Control-Allow-Headers": "Authorization, Origin, X-Requested-With, Content-Type, Accept"
-      },
-      body: 'OK'
-    }
-    callback(null, response)
-    return
-  }
+  // if(event.httpMethod === 'OPTIONS') {
+  //   const response = {
+  //     statusCode: 200,
+  //     headers: {
+  //       "Content-type": "application/json",
+  //       "Access-Control-Allow-Origin": "*",
+  //       "Access-Control-Allow-Methods" : "GET, POST, OPTIONS, PUT",
+  //       "Access-Control-Allow-Headers": "Authorization, Origin, X-Requested-With, Content-Type, Accept"
+  //     },
+  //     body: 'OK'
+  //   }
+  //   callback(null, response)
+  //   return
+  // }
   context.callbackWaitsForEmptyEventLoop = false;
   const { clientContext } = context;
   const username = clientContext.user ? clientContext.user.user_metadata.full_name : "guest";
@@ -25,7 +25,8 @@ exports.handler = function(event, context, callback) {
   const action = event.queryStringParameters.a;
   const flag = event.queryStringParameters.f;
   const uemail = event.queryStringParameters.u;
-  const item = JSON.parse(event.body);
+  const payload = event.queryStringParameters.p;
+  const item = JSON.parse(payload);
   run(username, useremail, uemail, action, flag, item).
     then(res => {
       callback(null, res);
