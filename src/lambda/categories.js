@@ -31,7 +31,9 @@ async function run(c) {
         fwinner: Array,
         pnominees: Array,
         pwinner: Array,
-        winnerdata: Object
+        winnerdata: Object,
+        pnomineesdata: Array,
+        fnomineesdata: Array
       }));
     }
 

@@ -28,7 +28,7 @@ async function run() {
   }
 
   const modelo = conn.model('lists');
-  let doc = await modelo.find();   
+  let doc = await modelo.find().sort('-_id');   
   const results = await Promise.all(doc);
   const response = {
     statusCode: 200,
