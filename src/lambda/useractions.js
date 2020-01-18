@@ -62,7 +62,7 @@ async function run(ue, a, f, it) {
       useNewUrlParser: true,
       useUnifiedTopology: true
     });
-    conn.model('awards', new mongoose.Schema({
+    conn.model('events', new mongoose.Schema({
       award: String,
       categorycod: String,
       categorytit: String,
@@ -71,8 +71,8 @@ async function run(ue, a, f, it) {
       pnominees: Array,
       pwinner: Array,
       winnerdata: Object,
-      fnomineesdata: Array,
-      pnomineesdata: Array
+      pnomineesdata: Array,
+      fnomineesdata: Array
     }));
     conn.model('users', new mongoose.Schema({
       name: String,
@@ -230,7 +230,7 @@ async function run(ue, a, f, it) {
           if(encontrado !== -1) {
             oldvote = user.votes[encontrado].vote;
           }
-          const A = conn.model('awards');
+          const A = conn.model('events');
           let catVotes = await A.findOne({ award: it.award, categorytit: it.category });
           let resp = [];
           if(catVotes && catVotes.fnomineesdata.length > 0) {

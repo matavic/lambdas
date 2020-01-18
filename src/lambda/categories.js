@@ -23,7 +23,7 @@ async function run(c) {
         useNewUrlParser: true,
         useUnifiedTopology: true
       });
-      conn.model('awards', new mongoose.Schema({
+      conn.model('events', new mongoose.Schema({
         award: String,
         categorycod: String,
         categorytit: String,
@@ -37,7 +37,7 @@ async function run(c) {
       }));
     }
 
-    const M = conn.model('awards');
+    const M = conn.model('events');
     let doc = await M.find({ categorycod: c });   
     let resp = await doc.map( async function(f){
       if(f.fwinner.length && Object.entries(f.winnerdata).length === 0){
