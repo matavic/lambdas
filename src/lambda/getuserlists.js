@@ -119,7 +119,7 @@ async function run(l, ue, u, e) {
               }
             });
           }
-          doc = movies;
+          doc = JSON.stringify(movies);
           break;
         case 'watchlist':
           user = await L.findOne({ email: searchfor }, { watchlist: 1, });
@@ -141,7 +141,7 @@ async function run(l, ue, u, e) {
               }
             });
           }
-          doc = movies;
+          doc = JSON.stringify(movies);
           break;
         case 'favorites':
           user = await L.findOne({ email: searchfor }, { favorites: 1, });
@@ -158,7 +158,7 @@ async function run(l, ue, u, e) {
               }
             });
           }
-          doc = movies;
+          doc = JSON.stringify(movies);
           break;
         default:
           break;
