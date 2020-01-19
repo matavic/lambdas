@@ -37,6 +37,44 @@ async function run(l, ue, u, e) {
         ratings: Array,
         votes: Array
       }));
+      conn.model('movies', new mongoose.Schema({
+        title: String,
+        year: String,
+        rated: String,
+        released: String,
+        runtime: String,
+        genre: String,
+        director: String,
+        writer: String,
+        actors: String,
+        plot: String,
+        language: String,
+        country: String,
+        awards: String,
+        poster: String,
+        ratings: Array,
+        metascore: String,
+        imdbrating: String,
+        imdbvotes: String,
+        imdbid: String,
+        type: String,
+        dvd: String,
+        boxoffice: String,
+        production: String,
+        website: String,
+        response: String,
+        tagline: String,
+        thumbnail: String,
+        tmdbid: String,
+        backdrop: String,
+        flag: String,
+        flaghd: String,
+        budget: Number,
+        revenue: Number,
+        youtube: String,
+        youtubethumbnail: String,
+        netflix: String
+      }));
     }
     let doc;
     let response;
@@ -60,25 +98,67 @@ async function run(l, ue, u, e) {
     }
 
     const L = conn.model('users');
-
     let searchfor = e !== 'guest' ? e : uem;
     let user;
     if(b){
+      let movies = [];
+      const M = conn.model('movies');
       switch (b) {
         case 'watched':
           user = await L.findOne({ email: searchfor }, { watched: 1, });
-          if(user)
-            doc = user.watched;
+          if(user){
+            let movieResp = [];
+            user.watched.forEach(async(m, index) => {
+              movieResp[index] = await M.findOne({ title: m });
+              if(movieResp[index]){
+                movies.push({
+                  Id: movieResp[index].tmdbid ? movieResp[index].tmdbid : null,
+                  Title: movieResp[index].title ? movieResp[index].title : null,
+                  Poster: movieResp[index].poster ? movieResp[index].poster : null,
+                });
+              }
+            });
+          }
+          doc = movies;
           break;
         case 'watchlist':
           user = await L.findOne({ email: searchfor }, { watchlist: 1, });
-          if(user)
-            doc = user.watchlist;
+          if(user){
+            let movieResp = [];
+            user.watchlist.forEach(async(m, index) => {
+              movieResp[index] = await M.findOne({ title: m });
+              if(movieResp[index]){
+                movies.push({
+                  Id: movieResp[index].tmdbid ? movieResp[index].tmdbid : null,
+                  Title: movieResp[index].title ? movieResp[index].title : null,
+                  Poster: movieResp[index].poster ? movieResp[index].poster : null,
+                  Plot: movieResp[index].plot ? movieResp[index].plot : null,
+                  Flag: movieResp[index].flag ? movieResp[index].flag : null,
+                  Tagline: movieResp[index].tagline ? movieResp[index].tagline : null,
+                  Youtube: movieResp[index].youtube ? movieResp[index].youtube : null,
+                  Netflix: movieResp[index].netflix ? movieResp[index].netflix : null,
+                });
+              }
+            });
+          }
+          doc = movies;
           break;
         case 'favorites':
           user = await L.findOne({ email: searchfor }, { favorites: 1, });
-          if(user)
-            doc = user.favorites;
+          if(user){
+            let movieResp = [];
+            user.favorites.forEach(async(m, index) => {
+              movieResp[index] = await M.findOne({ title: m });
+              if(movieResp[index]){
+                movies.push({
+                  Id: movieResp[index].tmdbid ? movieResp[index].tmdbid : null,
+                  Title: movieResp[index].title ? movieResp[index].title : null,
+                  Poster: movieResp[index].poster ? movieResp[index].poster : null,
+                });
+              }
+            });
+          }
+          doc = movies;
           break;
         default:
           break;
