@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 let conn = null;
 const uri = 'mongodb+srv://' + process.env.MONGODB_ATLAS_USER + ':' + process.env.MONGODB_ATLAS_PASSWORD + '@vmcluster-my0iu.mongodb.net/' + process.env.MONGODB_ATLAS_DB_NAME + '?retryWrites=true&w=majority';
-
 exports.handler = function(event, context, callback) {
   context.callbackWaitsForEmptyEventLoop = false;
 
@@ -38,7 +37,9 @@ async function run(l, ue, u, e) {
         votes: Array
       }));
       conn.model('movies', new mongoose.Schema({
-        title: String,
+        title: {
+          type: String
+        },
         year: String,
         rated: String,
         released: String,
@@ -100,16 +101,17 @@ async function run(l, ue, u, e) {
     const L = conn.model('users');
     let searchfor = e !== 'guest' ? e : uem;
     let user;
+    let movies = [];
+    let resp;
     if(b){
-      let movies = [];
       const M = conn.model('movies');
+      let movieResp = [];
       switch (b) {
         case 'watched':
           user = await L.findOne({ email: searchfor }, { watched: 1, });
           if(user){
-            let movieResp = [];
-            user.watched.forEach(async(m, index) => {
-              movieResp[index] = await M.findOne({ title: m });
+            resp =  user.watched.map(async(m, index) => {
+              movieResp[index] = await M.findOne({ title: m.Title });
               if(movieResp[index]){
                 movies.push({
                   Id: movieResp[index].tmdbid ? movieResp[index].tmdbid : null,
@@ -119,14 +121,12 @@ async function run(l, ue, u, e) {
               }
             });
           }
-          doc = JSON.stringify(movies);
           break;
         case 'watchlist':
           user = await L.findOne({ email: searchfor }, { watchlist: 1, });
           if(user){
-            let movieResp = [];
-            user.watchlist.forEach(async(m, index) => {
-              movieResp[index] = await M.findOne({ title: m });
+            resp = user.watchlist.map(async(m, index) => {
+              movieResp[index] = await M.findOne({ title: m.Title });
               if(movieResp[index]){
                 movies.push({
                   Id: movieResp[index].tmdbid ? movieResp[index].tmdbid : null,
@@ -141,14 +141,12 @@ async function run(l, ue, u, e) {
               }
             });
           }
-          doc = JSON.stringify(movies);
           break;
         case 'favorites':
           user = await L.findOne({ email: searchfor }, { favorites: 1, });
           if(user){
-            let movieResp = [];
-            user.favorites.forEach(async(m, index) => {
-              movieResp[index] = await M.findOne({ title: m });
+            resp = user.favorites.map(async(m, index) => {
+              movieResp[index] = await M.findOne({ title: m.Title });
               if(movieResp[index]){
                 movies.push({
                   Id: movieResp[index].tmdbid ? movieResp[index].tmdbid : null,
@@ -158,7 +156,6 @@ async function run(l, ue, u, e) {
               }
             });
           }
-          doc = JSON.stringify(movies);
           break;
         default:
           break;
@@ -184,7 +181,7 @@ async function run(l, ue, u, e) {
       return response;  
     }
     
-    // const results = await Promise.all(resp);
+    const results = await Promise.all(resp);
       response = {
       statusCode: 200,
       headers: {
@@ -193,7 +190,7 @@ async function run(l, ue, u, e) {
         "Access-Control-Allow-Methods" : 'GET, POST, OPTIONS, PUT',
         "Access-Control-Allow-Headers": "Authorization"
       },
-      body: JSON.stringify(doc)
+      body: JSON.stringify(movies)
     };
     return response;
 }
