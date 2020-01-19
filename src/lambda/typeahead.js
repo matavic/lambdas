@@ -21,7 +21,7 @@ async function run(s) {
         useNewUrlParser: true,
         useUnifiedTopology: true
       });
-      conn.model('awards', new mongoose.Schema({
+      conn.model('events', new mongoose.Schema({
         award: String,
         categorycod: String,
         categorytit: String,
@@ -33,7 +33,7 @@ async function run(s) {
       }));
     }
 
-    const M = conn.model('awards');
+    const M = conn.model('events');
     let doc = await M.find({ $or: [
         { fnominees: { $elemMatch : { $regex: b[0], $options: "i" }}},
         { pnominees: { $elemMatch : { $regex: b[0], $options: "i" }}}

@@ -26,7 +26,7 @@ async function run(t, a) {
       useNewUrlParser: true,
       useUnifiedTopology: true
     });
-    conn.model('awards', new mongoose.Schema({
+    conn.model('events', new mongoose.Schema({
       award: String,
       categorycod: String,
       categorytit: String,
@@ -38,7 +38,7 @@ async function run(t, a) {
     }));
   }
 
-  const M = conn.model('awards');
+  const M = conn.model('events');
   let consulta = [];
   if (b[0] === 'p' || b[0] === 'n') {
 
