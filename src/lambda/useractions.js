@@ -242,8 +242,9 @@ async function run(ue, a, f, it) {
               if(ind !== -1){
                 let fixOldN = parseFloat(catVotes.fnomineesdata[ind].nvotes) - 1;
                 let fixOldP = (fixOldN / total) * 100;
+                fixOldP = fixOldP === 0 || Number.isInteger(fixOldP) ? fixOldP : parseFloat(fixOldP.toFixed(1));
                 total = total - 1;
-                resulting = await A.update( { award: it.award, categorytit: it.category, "fnomineesdata.Title": oldvote }, { $set: { "fnomineesdata.$.nvotes": fixOldN, "fnomineesdata.$.pvotes": fixOldP.toFixed(1) } });
+                resulting = await A.update( { award: it.award, categorytit: it.category, "fnomineesdata.Title": oldvote }, { $set: { "fnomineesdata.$.nvotes": fixOldN, "fnomineesdata.$.pvotes": fixOldP } });
               } else {
                 break;
               }
@@ -252,13 +253,17 @@ async function run(ue, a, f, it) {
             let newN = parseFloat(catVotes.fnomineesdata[newInd].nvotes) + 1;
             total = total + 1;
             let newP = (newN / total) * 100;
-            resulting2 = await A.update( { award: it.award, categorytit: it.category, "fnomineesdata.Title": it.vote }, { $set: { "fnomineesdata.$.nvotes": newN, "fnomineesdata.$.pvotes": newP.toFixed(1) } });
+            newP = newP === 0 || Number.isInteger(newP) ? newP : parseFloat(newP.toFixed(1));
+            resulting2 = await A.update( { award: it.award, categorytit: it.category, "fnomineesdata.Title": it.vote }, { $set: { "fnomineesdata.$.nvotes": newN, "fnomineesdata.$.pvotes": newP } });
+            let newPercent;
             for(let i = 0; i < catVotes.fnomineesdata.length; i++){
               if(ind !== -1 && i === ind)
                 continue;
               if(i === newInd)
                 continue;
-              resp[i] = await A.update( { award: it.award, categorytit: it.category, "fnomineesdata.Title": catVotes.fnomineesdata[i].Title }, { $set: { "fnomineesdata.$.pvotes": ((parseFloat(catVotes.fnomineesdata[i].nvotes) / total) * 100).toFixed(1) } });
+              newPercent = (parseFloat(catVotes.fnomineesdata[i].nvotes) / total) * 100;
+              newPercent = newPercent === 0 || Number.isInteger(newPercent) ? newPercent : parseFloat(newPercent.toFixed(1));
+              resp[i] = await A.update( { award: it.award, categorytit: it.category, "fnomineesdata.Title": catVotes.fnomineesdata[i].Title }, { $set: { "fnomineesdata.$.pvotes": newPercent } });
             }
             const resArray = await Promise.all(resp);
           }
