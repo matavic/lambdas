@@ -22,7 +22,7 @@ const netflixLinks = [
   { t: 'The Perfect Date', n: '81019888'},
   { t: 'American Factory', n: '81090071'},
   { t: 'The Edge of Democracy', n: '80190535'},
-  { t: 'Dolemite is my Name', n: '80182014'},
+  { t: 'Dolemite Is My Name', n: '80182014'},
   { t: 'Atlantics', n: '81082007'},
   { t: 'Rolling Thunder Revue: A Bob Dylan Story by Martin Scorsese', n: '80221016'},
   { t: 'I Lost My Body', n: '81120982'},
