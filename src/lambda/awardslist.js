@@ -19,6 +19,7 @@ async function run() {
       useUnifiedTopology: true
     });
     conn.model('lists', new mongoose.Schema({
+      id: Number,
       title: String,
       image: String,
       description: String,
@@ -28,7 +29,7 @@ async function run() {
   }
 
   const modelo = conn.model('lists');
-  let doc = await modelo.find().sort('-_id');   
+  let doc = await modelo.find().sort('-id');   
   const results = await Promise.all(doc);
   const response = {
     statusCode: 200,
