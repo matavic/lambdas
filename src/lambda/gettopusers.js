@@ -27,7 +27,7 @@ async function run() {
     }
     let doc;
     const T = conn.model('topusers');
-    doc = await T.find({});
+    doc = await T.find({}).sort('-hits');
     
     // const results = await Promise.all(resp);
       const response = {
