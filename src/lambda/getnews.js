@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 let conn = null;
-// const uri = 'mongodb+srv://' + process.env.MONGODB_ATLAS_USER + ':' + process.env.MONGODB_ATLAS_PASSWORD + '@vmcluster-my0iu.mongodb.net/' + process.env.MONGODB_ATLAS_DB_NAME + '?retryWrites=true&w=majority';
-const uri = 'mongodb+srv://matavic:8G2AtquEEtpP0Ihk@vmcluster-my0iu.mongodb.net/awardsseason?retryWrites=true&w=majority';
+const uri = 'mongodb+srv://' + process.env.MONGODB_ATLAS_USER + ':' + process.env.MONGODB_ATLAS_PASSWORD + '@vmcluster-my0iu.mongodb.net/' + process.env.MONGODB_ATLAS_DB_NAME + '?retryWrites=true&w=majority';
 exports.handler = function(event, context, callback) {
   context.callbackWaitsForEmptyEventLoop = false;
   run().
