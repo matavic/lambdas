@@ -65,7 +65,7 @@ async function run() {
     }
     let doc;
     const F = conn.model('fasratings');
-    doc = await F.find({}).sort('ratings').limit(50);
+    doc = await F.find({}).sort('rating').limit(50);
     const M = conn.model('movies');
     let movieResp = [];
     let movies = [];
